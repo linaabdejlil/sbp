@@ -6,25 +6,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "applications") // NOM TAA TAB F DB//
-@Data // generate getters, setters//
-@NoArgsConstructor // / Lombok annotation to generate a no-argument constructor
+@Table(name = "applications")
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-
 public class Application {
+
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-    @ManyToOne
-    @JoinColumn(name = "job_id", nullable = false)
-    private Job job;
-    @Column(nullable = false)
-    private String resume;
-    @Column(nullable = false)
-    private String status; // accepted , applied , under review , rejected
 
+    @ManyToOne
+    private Applicant applicant;
 
+    private String coverLetter;
+
+    @Lob
+    private byte[] resume;
+
+    private Status status;
 }

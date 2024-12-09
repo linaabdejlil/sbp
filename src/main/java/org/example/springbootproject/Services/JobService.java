@@ -3,6 +3,7 @@ package org.example.springbootproject.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import java.util.List;
 
 @Service
@@ -12,19 +13,38 @@ public class JobService {
 
     @Autowired
     public JobService(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("https://active-jobs-db.p.rapidapi.com").build();
+        this.webClient = webClientBuilder.baseUrl("https://linkedin-data-api.p.rapidapi.com").build();
     }
 
-    public String fetchJobsFromExternalApi(String country, int sort, int pageSize) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/active-ats-7d")
-                        // Add query params if needed (example: .queryParam("country", country))
-                        .build())
-                .header("x-rapidapi-key", "4c5647bd2emsh2a44e97aad67149p1fe830jsnf0233f78ee8f") // Replace with actual API key
-                .header("x-rapidapi-host", "active-jobs-db.p.rapidapi.com")
+    public String fetchJobsFromExternalApi(String keywords, String locationId, String datePosted, String jobType, String sort) {
+        String response = webClient.get()
+                .uri(uriBuilder -> {
+                    var builder = uriBuilder
+                            .path("/search-jobs");
+
+                    if (keywords != null) {
+                        builder.queryParam("keywords", keywords);
+                    }
+                    if (locationId != null) {
+                        builder.queryParam("locationId", locationId);
+                    }
+                    if (datePosted != null) {
+                        builder.queryParam("datePosted", datePosted);
+                    }
+                    if (jobType != null) {
+                        builder.queryParam("jobType", jobType);
+                    }
+                    if (sort != null) {
+                        builder.queryParam("sort", sort);
+                    }
+                    return builder.build();
+                })
+                .header("x-rapidapi-key", "ce9b10740emsh59585afd6f4f148p1397acjsn398caa8acbd7")
+                .header("x-rapidapi-host", "linkedin-data-api.p.rapidapi.com")
                 .retrieve()
-                .bodyToMono(String.class) // Get the raw response as a String (JSON)
-                .block(); // Blocks the request until response is returned
+                .bodyToMono(String.class)
+                .block();
+
+        return response;
     }
 }

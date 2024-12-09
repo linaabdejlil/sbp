@@ -11,12 +11,13 @@ public class JobController {
     @Autowired
     private JobService jobService;
 
-    // Fetch jobs from Indeed API
     @GetMapping("/external")
     public String fetchJobsFromExternalApi(
-            @RequestParam String country ,
-            @RequestParam int sort,
-            @RequestParam int pageSize) {
-        return jobService.fetchJobsFromExternalApi(null, 0, 0);
+            @RequestParam(required = false) String keywords,
+            @RequestParam(required = false) String locationId,
+            @RequestParam(required = false) String datePosted,
+            @RequestParam(required = false) String jobType,
+            @RequestParam(required = false) String sort) {
+        return jobService.fetchJobsFromExternalApi(keywords, locationId, datePosted, jobType, sort);
     }
 }
